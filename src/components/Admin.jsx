@@ -1,26 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, FormLayout, TextField, Select, Button } from "@shopify/polaris";
+import { useNavigate } from "react-router-dom";
 
-const Admin = ({ onSettingsChange }) => {
-  const [settings, setSettings] = useState({
-    barBackground: "#f0f0f0",
-    barPadding: "10px",
-    barPosition: "top",
-    textColor: "#000000",
-    textSize: "16px",
-    textWeight: "normal",
-    buttonBackground: "#4CAF50",
-    buttonColor: "#ffffff",
-    buttonText: "Get Discount",
-    buttonBorderRadius: "4px",
-  });
+const Admin = ({ onSettingsChange, initialSettings }) => {
+  const [settings, setSettings] = useState(initialSettings);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setSettings(initialSettings);
+  }, [initialSettings]);
 
   const handleChange = (field) => (value) => {
-    setSettings({ ...settings, [field]: value });
+    setSettings((prevSettings) => ({ ...prevSettings, [field]: value }));
   };
 
   const handleSave = () => {
     onSettingsChange(settings);
+    navigate("/");
   };
 
   return (
@@ -55,8 +51,12 @@ const Admin = ({ onSettingsChange }) => {
           value={settings.textSize}
           onChange={handleChange("textSize")}
         />
-        <TextField
+        <Select
           label="Text Weight"
+          options={[
+            { label: "Normal", value: "normal" },
+            { label: "Bold", value: "bold" },
+          ]}
           value={settings.textWeight}
           onChange={handleChange("textWeight")}
         />
